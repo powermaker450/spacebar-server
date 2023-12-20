@@ -16,27 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Member, Role, getRights } from "@spacebar/util";
-import { Request, Response, Router } from "express";
-import {} from "typeorm";
+import { Guild } from "../../entities";
 
-const router: Router = Router();
-
-router.get("/", route({}), async (req: Request, res: Response) => {
-	const { guild_id } = req.params;
-	const rights = await getRights(req.user_id);
-	// admins dont need to be in the guild
-	if (!rights.has("OPERATOR"))
-		await Member.IsInGuildOrFail(req.user_id, guild_id);
-
-	const role_ids = await Role.find({ where: { guild_id }, select: ["id"] });
-	const counts: { [id: string]: number } = {};
-	for (const { id } of role_ids) {
-		counts[id] = await Member.count({ where: { roles: { id }, guild_id } });
-	}
-
-	return res.json(counts);
-});
-
-export default router;
+export type AdminGuildsResponse = Guild[];

@@ -29,4 +29,5 @@ export interface GuildCreateSchema {
 	guild_template_code?: string;
 	system_channel_id?: string;
 	rules_channel_id?: string;
+	owner_id?: string; // used by admins to create a guild for someone else
 }

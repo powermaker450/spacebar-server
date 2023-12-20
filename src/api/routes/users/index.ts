@@ -17,58 +17,65 @@
 */
 
 import { route } from "@spacebar/api";
-import { Member, PublicMemberProjection, getRights } from "@spacebar/util";
+import { PrivateUserProjection, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { MoreThan } from "typeorm";
-
+import { ILike, MoreThan } from "typeorm";
 const router = Router();
-
-// TODO: send over websocket
-// TODO: check for GUILD_MEMBERS intent
 
 router.get(
 	"/",
 	route({
+		right: "OPERATOR",
+		description: "Get a list of users",
 		query: {
 			limit: {
-				type: "number",
 				description:
-					"max number of members to return (1-1000). default 1",
+					"max number of users to return (1-1000). default 100",
+				type: "number",
+				required: false,
 			},
 			after: {
+				description: "The amount of users to skip",
+				type: "number",
+				required: false,
+			},
+			query: {
+				description: "The search query",
 				type: "string",
+				required: false,
 			},
 		},
 		responses: {
 			200: {
-				body: "APIMemberArray",
+				body: "AdminUsersResponse",
 			},
-			403: {
+			400: {
 				body: "APIErrorResponse",
 			},
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { guild_id } = req.params;
-		const rights = await getRights(req.user_id);
-		const limit = Number(req.query.limit) || 1;
+		const { after, query } = req.query as {
+			after?: number;
+			query?: string;
+		};
+
+		const limit = Number(req.query.limit) || 100;
 		if (limit > 1000 || limit < 1)
 			throw new HTTPError("Limit must be between 1 and 1000");
-		const after = `${req.query.after}`;
-		const query = after ? { id: MoreThan(after) } : {};
 
-		if (!rights.has("OPERATOR"))
-			await Member.IsInGuildOrFail(req.user_id, guild_id);
-
-		const members = await Member.find({
-			where: { guild_id, ...query },
-			select: PublicMemberProjection,
+		const users = await User.find({
+			where: {
+				...(after ? { id: MoreThan(`${after}`) } : {}),
+				...(query ? { username: ILike(`%${query}%`) } : {}),
+			},
 			take: limit,
+			select: PrivateUserProjection,
 			order: { id: "ASC" },
 		});
 
-		return res.json(members);
+		res.send(users);
 	},
 );
 

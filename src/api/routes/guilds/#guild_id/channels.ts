@@ -50,6 +50,7 @@ router.post(
 	route({
 		requestBody: "ChannelModifySchema",
 		permission: "MANAGE_CHANNELS",
+		right: "OPERATOR",
 		responses: {
 			201: {
 				body: "Channel",
@@ -81,6 +82,7 @@ router.patch(
 	route({
 		requestBody: "ChannelReorderSchema",
 		permission: "MANAGE_CHANNELS",
+		right: "OPERATOR",
 		responses: {
 			204: {},
 			400: {

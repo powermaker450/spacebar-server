@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { checkToken, Rights } from "@spacebar/util";
 import * as Sentry from "@sentry/node";
+import { checkToken, Rights } from "@spacebar/util";
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 
@@ -67,6 +67,8 @@ declare global {
 			user_bot: boolean;
 			token: { id: string; iat: number };
 			rights: Rights;
+			has_permission?: boolean;
+			has_right?: boolean;
 		}
 	}
 }
