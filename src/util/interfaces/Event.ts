@@ -77,6 +77,7 @@ export interface ReadyEventData {
 	guilds: IReadyGuildDTO[] | GuildOrUnavailable[]; // depends on capability
 	analytics_token?: string;
 	connected_accounts?: ConnectedAccount[];
+	presences: object;
 	consents?: {
 		personalization?: {
 			consented?: boolean;
@@ -119,7 +120,10 @@ export interface ReadyEventData {
 	users?: PublicUser[];
 	sessions: unknown[];
 	api_code_version: number;
-	tutorial: number | null;
+	tutorial: {
+		indicators_suppressed: boolean;
+		indicators_confirmed: Array<number>;
+	}; // Probably not the correct thing to do.
 	resume_gateway_url: string;
 	session_type: string;
 	auth_session_id_hash: string;

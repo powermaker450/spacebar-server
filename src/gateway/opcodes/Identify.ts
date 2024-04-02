@@ -394,6 +394,15 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		guilds: this.capabilities.has(Capabilities.FLAGS.CLIENT_STATE_V2)
 			? guilds.map((x) => new ReadyGuildDTO(x).toJSON())
 			: guilds,
+		presences: [
+			// Just placeholder data, but should work
+			{
+				activites: [],
+				status: "online",
+				since: 0,
+				afk: false,
+			},
+		],
 		relationships: user.relationships.map((x) => x.toPublicRelationship()),
 		read_state: {
 			entries: read_states,
@@ -436,7 +445,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		api_code_version: 1,
 		friend_suggestion_count: 0,
 		analytics_token: "",
-		tutorial: null,
+		tutorial: {
+			indicators_suppressed: true,
+			indicators_confirmed: [],
+		},
 		session_type: "normal", // TODO
 		auth_session_id_hash: "", // TODO
 	};

@@ -1,3 +1,5 @@
+## This repo fixes some stuff so that Discord Android 126.21 functions (mostly) correct with Spacebar.
+
 <p align="center">
   <img width="100" src="https://raw.githubusercontent.com/spacebarchat/spacebarchat/master/branding/png/Spacebar__Icon-Rounded-Subtract.png" />
 </p>
