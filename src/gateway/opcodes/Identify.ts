@@ -451,6 +451,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		},
 		session_type: "normal", // TODO
 		auth_session_id_hash: "", // TODO
+		notification_settings: {
+			// ????
+			flags: 0,
+		},
 	};
 
 	// Send READY

@@ -2247,6 +2247,7 @@
                 "required": [
                     "channel",
                     "embeds",
+                    "flags",
                     "id",
                     "mention_channels",
                     "mention_roles",
@@ -10230,6 +10231,15 @@
                         }
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "tags": [
                     "oauth2"
                 ]
@@ -10301,6 +10311,30 @@
                         }
                     }
                 ],
+                "tags": [
+                    "oauth2"
+                ]
+            }
+        },
+        "/oauth2/applications/@me/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Application"
+                                }
+                            }
+                        }
+                    }
+                },
                 "tags": [
                     "oauth2"
                 ]
@@ -13693,6 +13727,62 @@
                 ]
             }
         },
+        "/guilds/{guild_id}/bulk-ban/": {
+            "post": {
+                "x-permission-required": "BAN_MEMBERS",
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Ban"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "guild_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "guild_id"
+                    }
+                ],
+                "tags": [
+                    "guilds"
+                ]
+            }
+        },
         "/guilds/{guild_id}/bans/": {
             "get": {
                 "x-permission-required": "BAN_MEMBERS",
@@ -13739,7 +13829,7 @@
                 ]
             }
         },
-        "/guilds/{guild_id}/bans/{user}": {
+        "/guilds/{guild_id}/bans/{user_id}": {
             "get": {
                 "x-permission-required": "BAN_MEMBERS",
                 "security": [
@@ -13790,21 +13880,19 @@
                         "description": "guild_id"
                     },
                     {
-                        "name": "user",
+                        "name": "user_id",
                         "in": "path",
                         "required": true,
                         "schema": {
                             "type": "string"
                         },
-                        "description": "user"
+                        "description": "user_id"
                     }
                 ],
                 "tags": [
                     "guilds"
                 ]
-            }
-        },
-        "/guilds/{guild_id}/bans/{user_id}": {
+            },
             "put": {
                 "x-permission-required": "BAN_MEMBERS",
                 "security": [
@@ -13928,71 +14016,6 @@
                             "type": "string"
                         },
                         "description": "user_id"
-                    }
-                ],
-                "tags": [
-                    "guilds"
-                ]
-            }
-        },
-        "/guilds/{guild_id}/bans/@me": {
-            "put": {
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/BanCreateSchema"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Ban"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "guild_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "guild_id"
                     }
                 ],
                 "tags": [
@@ -16348,7 +16371,7 @@
         },
         "/auth/generate-registration-tokens/": {
             "get": {
-                "x-right-required": "OPERATOR",
+                "x-right-required": "CREATE_REGISTRATION_TOKENS",
                 "security": [
                     {
                         "bearer": []
