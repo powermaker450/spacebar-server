@@ -1,27 +1,39 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
+import {
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	OneToOne,
+	RelationId,
+} from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Team } from "./Team";
 import { User } from "./User";
+import { dbEngine } from "../util/Database";
+import { Guild } from "./Guild";
 
-@Entity("applications")
+@Entity({
+	name: "applications",
+	engine: dbEngine,
+})
 export class Application extends BaseClass {
 	@Column()
 	name: string;
@@ -104,14 +116,21 @@ export class Application extends BaseClass {
 	@Column({ nullable: true })
 	privacy_policy_url?: string;
 
+	@Column({ nullable: true })
+	@RelationId((application: Application) => application.guild)
+	guild_id?: string;
+
+	@JoinColumn({ name: "guild_id" })
+	@ManyToOne(() => Guild)
+	guild?: Guild; // guild to which the app is linked, e.g. a developer support server
+
+	@Column({ nullable: true })
+	custom_install_url?: string;
+
 	//just for us
 
 	//@Column({ type: "simple-array", nullable: true })
 	//rpc_origins?: string[];
-
-	//@JoinColumn({ name: "guild_id" })
-	//@ManyToOne(() => Guild)
-	//guild?: Guild; // if this application is a game sold, this field will be the guild to which it has been linked
 
 	//@Column({ nullable: true })
 	//primary_sku_id?: string; // if this application is a game sold, this field will be the id of the "Game SKU" that is created,
